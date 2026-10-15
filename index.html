@@ -1,0 +1,2397 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>ReWiseQuest | One topic a day. Zero decisions.</title>
+    <meta
+      name="description"
+      content="ReWiseQuest picks what you revise each day, brings new topics back often and never lets old ones fade. Private, offline, no account."
+    />
+    <link rel="icon" type="image/png" href="assets/icon.png" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f7f0e1;
+        --tile: #fffdf7;
+        --ink: #14110e;
+        --line: #14110e;
+        --fix: #14110e;
+        --cream: #f7f0e1;
+        --new: #ff6a4d;
+        --med: #ffbf2f;
+        --old: #2ec785;
+        --lime: #d6f36a;
+        --pink: #ffb4cf;
+        --font:
+          "Space Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #16130f;
+          --tile: #241f19;
+          --ink: #f7f0e1;
+          --line: #f7f0e1;
+        }
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      html {
+        font-size: clamp(13px, 0.4vw + 9px, 19px);
+        scroll-behavior: smooth;
+        scrollbar-gutter: stable;
+      }
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font: 500 1.05rem/1.4 var(--font);
+        padding: max(1rem, env(safe-area-inset-top))
+          max(1rem, env(safe-area-inset-right))
+          max(1.5rem, env(safe-area-inset-bottom))
+          max(1rem, env(safe-area-inset-left));
+      }
+      body.modal-open {
+        overflow: hidden;
+      }
+      a:focus-visible,
+      button:focus-visible,
+      input:focus-visible {
+        outline: 0.2rem solid var(--ink);
+        outline-offset: 0.2rem;
+      }
+      .wrap {
+        max-width: 74rem;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 3.5rem;
+      }
+      .tile {
+        min-width: 0;
+        min-height: 0;
+        overflow: hidden;
+        position: relative;
+        background: var(--tile);
+        border: 0.2rem solid var(--line);
+        border-radius: 0.4rem;
+        box-shadow: 0.35rem 0.35rem 0 var(--line);
+        padding: 1rem 1.2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.7rem;
+      }
+      .label {
+        align-self: flex-start;
+        font-weight: 700;
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        white-space: nowrap;
+        padding: 0.25rem 0.6rem;
+        border: 0.15rem solid var(--fix);
+        border-radius: 0.25rem;
+        background: var(--med);
+        color: var(--fix);
+      }
+      .muted {
+        opacity: 0.72;
+      }
+      h1,
+      h2,
+      h3 {
+        letter-spacing: -0.03em;
+        line-height: 1.05;
+      }
+      h2 {
+        font-size: clamp(1.8rem, 4vw, 2.8rem);
+      }
+      h3 {
+        font-size: 1.3rem;
+      }
+      .sec {
+        display: flex;
+        flex-direction: column;
+        gap: 1.2rem;
+      }
+      .sec > p.lead {
+        max-width: 44rem;
+        font-size: 1.1rem;
+      }
+
+      /* nav */
+      .nav {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.6rem 1rem;
+        background: var(--fix);
+        color: var(--cream);
+        --line: #14110e;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        font-weight: 700;
+        font-size: 1.4rem;
+        letter-spacing: -0.02em;
+        white-space: nowrap;
+      }
+      .logo img,
+      .brand img {
+        width: 2rem;
+        height: 2rem;
+        object-fit: contain;
+        margin-right: 0.55rem;
+        flex: none;
+      }
+      .nav nav {
+        margin-left: auto;
+        display: flex;
+        gap: 1.2rem;
+        align-items: center;
+      }
+      .nav nav a:not(.cta) {
+        color: var(--cream);
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+      .nav nav a:not(.cta):hover {
+        color: var(--lime);
+      }
+      .cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.6rem;
+        font: 700 1rem var(--font);
+        text-decoration: none;
+        color: var(--fix);
+        background: var(--med);
+        cursor: pointer;
+        padding: 0.75rem 1.2rem;
+        border: 0.2rem solid var(--fix);
+        border-radius: 0.3rem;
+        box-shadow: 0.25rem 0.25rem 0 var(--fix);
+        transition:
+          transform 0.08s,
+          box-shadow 0.08s;
+        white-space: nowrap;
+      }
+      .cta:hover {
+        transform: translate(-0.08rem, -0.08rem);
+        box-shadow: 0.33rem 0.33rem 0 var(--fix);
+      }
+      .cta:active {
+        transform: translate(0.25rem, 0.25rem);
+        box-shadow: 0 0 0 var(--fix);
+      }
+      .cta.lime {
+        background: var(--lime);
+      }
+      .cta.white {
+        background: #fff;
+      }
+      .cta.big {
+        font-size: 1.2rem;
+        padding: 1rem 1.6rem;
+      }
+      .cta.sm {
+        padding: 0.45rem 0.9rem;
+        font-size: 0.85rem;
+        min-width: 5.5rem;
+        box-shadow: 0.2rem 0.2rem 0 var(--fix);
+      }
+      .nav .cta {
+        padding: 0.45rem 0.9rem;
+        font-size: 0.85rem;
+        background: var(--lime);
+        border-color: var(--cream);
+        box-shadow: none;
+      }
+
+      /* trailer */
+      .trail {
+        gap: 0.9rem;
+        padding: 1.2rem 1.4rem 1.3rem;
+      }
+      .trail-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .trail-head .small {
+        font-size: 0.85rem;
+      }
+      .tw {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 680 / 383;
+        overflow: hidden;
+        border: 0.2rem solid var(--line);
+        border-radius: 0.4rem;
+        background: #f7f0e1;
+      }
+      .tv {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 680px;
+        height: 383px;
+        transform-origin: 0 0;
+        font-family: var(--font);
+        color: #14110e;
+      }
+      .tsc {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        opacity: 0;
+        transition: opacity 0.25s;
+        pointer-events: none;
+      }
+      .tsc.on {
+        opacity: 1;
+      }
+      .tcp {
+        font-size: 24px;
+        font-weight: 700;
+        text-align: center;
+        padding: 0 24px;
+        letter-spacing: -0.02em;
+      }
+      .tt {
+        border: 2px solid #14110e;
+        border-radius: 6px;
+        box-shadow: 5px 5px 0 #14110e;
+        padding: 16px 20px;
+      }
+      .tl {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 3px 9px;
+        border: 1.5px solid #14110e;
+        border-radius: 4px;
+        background: #fff;
+        color: #14110e;
+      }
+      .tb {
+        font-size: 18px;
+        font-weight: 700;
+        padding: 12px 28px;
+        border: 2px solid #14110e;
+        border-radius: 6px;
+        box-shadow: 4px 4px 0 #14110e;
+        background: #fff;
+        text-align: center;
+        min-width: 240px;
+        color: #14110e;
+      }
+      .ts3 {
+        display: flex;
+        gap: 8px;
+      }
+      .ts3 span {
+        flex: 1;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 7px 4px;
+        border: 2px solid #14110e;
+        border-radius: 5px;
+        background: #fff;
+        color: #14110e;
+      }
+      .ts3 span.sel {
+        background: #14110e;
+        color: #fff;
+      }
+      .tsp {
+        display: flex;
+        gap: 12px;
+      }
+      .tsp i {
+        font-style: normal;
+        width: 46px;
+        height: 46px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 18px;
+        border: 2px solid #14110e;
+        border-radius: 6px;
+        color: #14110e;
+        transition: transform 0.1s;
+      }
+      .tsp i.now {
+        transform: translate(-3px, -3px);
+        box-shadow: 5px 5px 0 #14110e;
+      }
+      .thm {
+        display: grid;
+        grid-template-rows: repeat(7, 12px);
+        grid-auto-flow: column;
+        gap: 3px;
+      }
+      .thm b {
+        width: 12px;
+        height: 12px;
+        border-radius: 2px;
+        background: rgba(20, 17, 14, 0.12);
+      }
+      .tch {
+        position: absolute;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 5px 10px;
+        border: 1.5px solid #f7f0e1;
+        border-radius: 4px;
+        color: #14110e;
+        white-space: nowrap;
+      }
+      .tbug {
+        position: absolute;
+        top: 12px;
+        left: 14px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        opacity: 0;
+        transition: opacity 0.3s;
+        z-index: 5;
+        color: #14110e;
+      }
+      .tbug img {
+        height: 30px;
+        width: auto;
+        display: block;
+      }
+      .tctl {
+        display: flex;
+        align-items: center;
+        gap: 0.9rem;
+      }
+      .tctl input {
+        flex: 1;
+        min-width: 0;
+        accent-color: var(--ink);
+        cursor: pointer;
+      }
+      .tctl span {
+        font-size: 0.85rem;
+        font-weight: 700;
+        min-width: 5rem;
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* hero */
+      .hero {
+        display: grid;
+        grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+        gap: 1.6rem;
+        align-items: stretch;
+      }
+      .hl {
+        background: var(--lime);
+        color: #14110e;
+        --line: #14110e;
+        gap: 1.2rem;
+        padding: 1.8rem;
+      }
+      .hl .label {
+        background: #fff;
+      }
+      .hl h1 {
+        font-size: clamp(2.4rem, 6vw, 4.6rem);
+        line-height: 1;
+      }
+      .hl p {
+        font-size: 1.15rem;
+        max-width: 34rem;
+      }
+      .btns {
+        display: flex;
+        gap: 0.9rem;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .hr {
+        background: var(--pink);
+        color: #14110e;
+        --line: #14110e;
+        gap: 1.1rem;
+        padding: 1.5rem;
+        justify-content: center;
+      }
+      .hr .label {
+        background: #fff;
+      }
+      .hr .steps {
+        flex-wrap: wrap;
+      }
+      .hr .step {
+        width: 2.6rem;
+        height: 2.6rem;
+        font-size: 1rem;
+      }
+      .hr .step + .step::before {
+        width: 0.55rem;
+      }
+      .hr .step.now {
+        transform: none;
+        box-shadow: none;
+      }
+      .mini {
+        display: flex;
+        flex-direction: column;
+        gap: 0.6rem;
+      }
+      .mini div {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.35rem 0.7rem;
+        border: 0.15rem solid #14110e;
+        border-radius: 0.3rem;
+        background: #fff;
+        font-weight: 700;
+      }
+      .mini div:first-child {
+        background: var(--med);
+      }
+      .mini span:last-child {
+        font-size: 0.8rem;
+        opacity: 0.75;
+        white-space: nowrap;
+      }
+      .pills {
+        display: flex;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+      }
+      .pill {
+        font-weight: 700;
+        font-size: 0.8rem;
+        padding: 0.3rem 0.7rem;
+        border: 0.15rem solid #14110e;
+        border-radius: 0.25rem;
+        background: #fff;
+      }
+
+      /* demo call-to-action tile */
+      .dcta {
+        display: grid;
+        grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+        gap: 1.6rem;
+        align-items: center;
+        background: var(--med);
+        color: #14110e;
+        --line: #14110e;
+        padding: 1.8rem;
+      }
+      .dcta .label {
+        background: #fff;
+      }
+      .dcta .dl {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+      .dcta p {
+        max-width: 34rem;
+        font-size: 1.1rem;
+      }
+      .dcta .note {
+        font-size: 0.9rem;
+        opacity: 0.8;
+      }
+      .dcta .dr {
+        display: flex;
+        justify-content: center;
+      }
+      .dcta .dr img {
+        width: 100%;
+        max-width: 15rem;
+        height: auto;
+        display: block;
+        transform: rotate(-4deg);
+      }
+
+      /* modal */
+      .overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 100;
+        display: grid;
+        place-items: center;
+        padding: 1rem;
+        overflow: auto;
+        background: rgba(20, 17, 14, 0.5);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        animation: fade 0.2s ease-out;
+      }
+      .mbox {
+        width: 100%;
+        max-width: 74rem;
+        max-height: calc(100vh - 2rem);
+        max-height: calc(100dvh - 2rem);
+        overflow: auto;
+        gap: 1rem;
+        animation: rise 0.25s ease-out;
+      }
+      .mh {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .mh .ttl {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+      }
+      .mh .ttl h2 {
+        font-size: 1.5rem;
+      }
+      .x {
+        font: 700 1.2rem var(--font);
+        width: 2.4rem;
+        height: 2.4rem;
+        border: 0.2rem solid var(--fix);
+        border-radius: 0.3rem;
+        background: var(--new);
+        color: #14110e;
+        cursor: pointer;
+        box-shadow: 0.2rem 0.2rem 0 var(--fix);
+      }
+      .x:active {
+        transform: translate(0.2rem, 0.2rem);
+        box-shadow: none;
+      }
+      @keyframes fade {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(1.2rem) scale(0.98);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      /* demo stage */
+      .stage {
+        height: 50rem;
+        position: relative;
+        flex: none;
+      }
+
+      /* features */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+        gap: 1.3rem;
+      }
+      .fe h3 {
+        margin-top: 0.2rem;
+      }
+      .fe p {
+        font-size: 0.98rem;
+      }
+      .qs {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+        gap: 1.3rem;
+      }
+      .qs .tile {
+        padding: 1.2rem 1.3rem;
+        color: #14110e;
+        --line: #14110e;
+      }
+      .qs .tile .label {
+        background: #fff;
+      }
+      .qs b {
+        font-size: 2.4rem;
+        letter-spacing: -0.04em;
+        line-height: 1;
+      }
+      .band {
+        background: var(--fix);
+        color: var(--cream);
+        --line: #14110e;
+        padding: 1.8rem;
+        gap: 1rem;
+      }
+      .band h2 {
+        color: var(--lime);
+      }
+      .band .pills .pill {
+        background: var(--cream);
+        color: #14110e;
+      }
+
+      /* creator */
+      .cr {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 1.6rem;
+        align-items: center;
+        padding: 1.8rem;
+        background: var(--pink);
+        color: #14110e;
+        --line: #14110e;
+      }
+      .cr .label {
+        background: #fff;
+      }
+      .ph {
+        width: 9rem;
+        height: 9rem;
+        border-radius: 50%;
+        border: 0.2rem solid #14110e;
+        background: var(--lime);
+        box-shadow: 0.3rem 0.3rem 0 #14110e;
+        overflow: hidden;
+        flex: none;
+      }
+      .ph img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .cr h2 {
+        margin: 0.3rem 0;
+      }
+      .cr .links {
+        display: flex;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+        margin-top: 0.6rem;
+      }
+      .fin {
+        text-align: center;
+        align-items: center;
+        background: var(--med);
+        color: #14110e;
+        --line: #14110e;
+        padding: 2.4rem 1.2rem;
+        gap: 1.1rem;
+      }
+      .fin img {
+        width: 5rem;
+        height: 5rem;
+        object-fit: contain;
+      }
+      .fin h2 {
+        font-size: clamp(2rem, 5vw, 3.6rem);
+      }
+      footer {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+        font-size: 0.85rem;
+        opacity: 0.8;
+      }
+      footer a {
+        color: inherit;
+      }
+
+      /* ======== DEMO (the real app UI) ======== */
+      .bento {
+        width: 100%;
+        height: 100%;
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-rows: auto auto minmax(0, 1.2fr) minmax(0, 1fr) minmax(
+            0,
+            1fr
+          );
+        grid-template-areas: "head head head head head head" "cyc cyc cyc cyc cyc cyc" "today today today today add add" "today today today today stats stats" "new new med med old old";
+      }
+      .a-head {
+        grid-area: head;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.6rem 1rem;
+        background: var(--fix);
+        color: var(--cream);
+        --line: #14110e;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        font-weight: 700;
+        font-size: 1.4rem;
+        letter-spacing: -0.02em;
+        white-space: nowrap;
+      }
+      .xp {
+        flex: 1;
+        min-width: 3rem;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-weight: 700;
+        font-size: 0.85rem;
+        white-space: nowrap;
+      }
+      .meter {
+        flex: 1;
+        height: 1.1rem;
+        border: 0.15rem solid var(--cream);
+        border-radius: 0.25rem;
+        overflow: hidden;
+      }
+      .meter b {
+        display: block;
+        height: 100%;
+        background: var(--lime);
+        transition: width 0.35s;
+      }
+      .badge {
+        font-weight: 700;
+        font-size: 0.8rem;
+        padding: 0.3rem 0.6rem;
+        border-radius: 0.25rem;
+        background: var(--cream);
+        color: #14110e;
+        white-space: nowrap;
+      }
+      .acct {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding-left: 1rem;
+        border-left: 0.15rem solid rgba(247, 240, 225, 0.3);
+        white-space: nowrap;
+      }
+      .avatar {
+        width: 2.2rem;
+        height: 2.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        background: var(--pink);
+        color: #14110e;
+        border-radius: 50%;
+      }
+      .acct b {
+        display: block;
+        font-size: 0.9rem;
+        line-height: 1.1;
+      }
+      .a-cyc {
+        grid-area: cyc;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.55rem 1rem;
+      }
+      .steps {
+        display: flex;
+        gap: 0.55rem;
+        flex: none;
+        align-items: center;
+      }
+      .step {
+        position: relative;
+        width: 2rem;
+        height: 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: #14110e;
+        border: 0.15rem solid var(--line);
+        border-radius: 0.3rem;
+      }
+      .step + .step::before {
+        content: "";
+        position: absolute;
+        right: 100%;
+        top: 50%;
+        width: 0.55rem;
+        border-top: 0.15rem solid var(--line);
+      }
+      .step.N {
+        background: var(--new);
+      }
+      .step.M {
+        background: var(--med);
+      }
+      .step.O {
+        background: var(--old);
+      }
+      .step.done {
+        opacity: 0.3;
+      }
+      .step.now {
+        transform: translate(-0.12rem, -0.12rem);
+        box-shadow: 0.25rem 0.25rem 0 var(--line);
+      }
+      .next {
+        flex: 1;
+        min-width: 0;
+        text-align: right;
+        font-size: 0.85rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .a-today {
+        grid-area: today;
+        background: var(--lime);
+        color: #14110e;
+        --line: #14110e;
+      }
+      .a-today .label,
+      .a-add .label {
+        background: #fff;
+      }
+      .top {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+      }
+      .top .label {
+        flex: none;
+      }
+      .diff {
+        background: #14110e !important;
+        color: var(--cream) !important;
+      }
+      .topic {
+        font-weight: 700;
+        font-size: clamp(1.8rem, 3.4vw, 4.6rem);
+        line-height: 1.05;
+        letter-spacing: -0.03em;
+        overflow-wrap: anywhere;
+      }
+      .mastery {
+        display: flex;
+        gap: 0.45rem;
+        align-items: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+        flex-wrap: wrap;
+      }
+      .mastery i,
+      .pips i {
+        display: block;
+        border: 0.15rem solid currentColor;
+        border-radius: 0.15rem;
+      }
+      .mastery i {
+        width: 2rem;
+        height: 1.1rem;
+      }
+      .mastery i.on {
+        background: #14110e;
+      }
+      .complete {
+        margin-top: auto;
+        font: 700 1.5rem/1 var(--font);
+        color: #14110e;
+        background: #fff;
+        cursor: pointer;
+        padding: 1.1rem;
+        border: 0.2rem solid #14110e;
+        border-radius: 0.4rem;
+        box-shadow: 0.3rem 0.3rem 0 #14110e;
+        transition:
+          transform 0.08s,
+          box-shadow 0.08s;
+      }
+      .complete:hover:not(:disabled) {
+        transform: translate(-0.1rem, -0.1rem);
+        box-shadow: 0.4rem 0.4rem 0 #14110e;
+      }
+      .complete:active:not(:disabled) {
+        transform: translate(0.3rem, 0.3rem);
+        box-shadow: 0 0 0 #14110e;
+      }
+      .complete:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+      .pop {
+        position: absolute;
+        right: 1.2rem;
+        top: 1rem;
+        font-weight: 700;
+        font-size: 1.2rem;
+        background: #fff;
+        border: 0.15rem solid #14110e;
+        padding: 0.2rem 0.6rem;
+        border-radius: 0.25rem;
+        opacity: 0;
+        pointer-events: none;
+      }
+      .pop.go {
+        animation: pop 1s ease-out;
+      }
+      @keyframes pop {
+        0% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-1.5rem);
+        }
+      }
+      .a-add {
+        grid-area: add;
+        background: var(--pink);
+        color: #14110e;
+        --line: #14110e;
+      }
+      .field {
+        display: flex;
+        gap: 0.6rem;
+      }
+      .field input {
+        flex: 1;
+        min-width: 0;
+        font: 500 1rem var(--font);
+        padding: 0.55rem 0.7rem;
+        border: 0.2rem solid #14110e;
+        border-radius: 0.3rem;
+        background: #fff;
+        color: #14110e;
+      }
+      .field button {
+        font: 700 1rem var(--font);
+        padding: 0 1rem;
+        border: 0.2rem solid #14110e;
+        border-radius: 0.3rem;
+        background: var(--med);
+        color: #14110e;
+        cursor: pointer;
+        box-shadow: 0.25rem 0.25rem 0 #14110e;
+      }
+      .field button:active {
+        transform: translate(0.25rem, 0.25rem);
+        box-shadow: none;
+      }
+      .seg {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+      }
+      .seg button {
+        font: 700 0.8rem/1.1 var(--font);
+        padding: 0.5rem 0.2rem;
+        border: 0.2rem solid #14110e;
+        border-radius: 0.3rem;
+        background: #fff;
+        color: #14110e;
+        cursor: pointer;
+      }
+      .seg button small {
+        display: block;
+        font-weight: 500;
+        font-size: 0.75rem;
+        margin-top: 0.15rem;
+      }
+      .seg button[aria-checked="true"] {
+        background: #14110e;
+        color: #fff;
+      }
+      .cap {
+        font-size: 0.8rem;
+        margin-top: auto;
+      }
+      .a-stats {
+        grid-area: stats;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        border-bottom: 0.15rem dashed var(--line);
+        padding-bottom: 0.3rem;
+      }
+      .row b {
+        font-size: 1.15rem;
+        font-weight: 700;
+      }
+      .a-new {
+        grid-area: new;
+      }
+      .a-med {
+        grid-area: med;
+      }
+      .a-old {
+        grid-area: old;
+      }
+      .chips {
+        display: flex;
+        flex-direction: column;
+        gap: 0.45rem;
+        min-height: 0;
+        overflow: hidden;
+      }
+      .chip {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.3rem 0.6rem;
+        border: 0.15rem solid var(--line);
+        border-radius: 0.3rem;
+        font-weight: 700;
+      }
+      .chip span:first-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .chip.front {
+        background: var(--med);
+        color: #14110e;
+        border-color: #14110e;
+      }
+      .chip.empty,
+      .chip.more {
+        font-weight: 500;
+        opacity: 0.6;
+        border-style: dashed;
+      }
+      .pips {
+        display: flex;
+        gap: 0.2rem;
+        flex: none;
+      }
+      .pips i {
+        width: 0.7rem;
+        height: 0.7rem;
+      }
+      .pips i.on {
+        background: currentColor;
+      }
+
+      @media (max-width: 900px) {
+        .hero,
+        .cr,
+        .dcta {
+          grid-template-columns: 1fr;
+        }
+        .nav nav a:not(.cta) {
+          display: none;
+        }
+        .cr .ph {
+          width: 7rem;
+          height: 7rem;
+        }
+        .dcta .dr img {
+          max-width: 9rem;
+        }
+      }
+      @media (max-width: 720px) {
+        .stage {
+          height: 68rem;
+        }
+        .bento {
+          gap: 0.8rem;
+          grid-template-columns: 1fr 1fr;
+          grid-template-rows:
+            auto auto minmax(0, 1.6fr) auto minmax(0, 1fr)
+            minmax(0, 0.8fr);
+          grid-template-areas: "head head" "cyc cyc" "today today" "add add" "new med" "old old";
+        }
+        .a-stats,
+        .xp small,
+        .acct div,
+        .next,
+        .hide-m,
+        .a-cyc .label,
+        .cap {
+          display: none;
+        }
+        .stage .tile {
+          padding: 0.8rem 1rem;
+        }
+        .chip:nth-child(n + 3) {
+          display: none;
+        }
+        .a-head {
+          gap: 0.6rem;
+        }
+        .brand {
+          font-size: 1rem;
+        }
+        .brand img {
+          width: 1.5rem;
+          height: 1.5rem;
+        }
+        .acct {
+          padding-left: 0.6rem;
+        }
+        .steps {
+          flex: 1;
+        }
+        .a-cyc .step {
+          flex: 1;
+          width: auto;
+          height: 2rem;
+        }
+        .trail {
+          padding: 0.9rem;
+        }
+        .tctl span {
+          display: none;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .pop.go,
+        .overlay,
+        .mbox {
+          animation: none;
+        }
+        .complete,
+        .cta,
+        .tsc,
+        .tbug {
+          transition: none;
+        }
+        html {
+          scroll-behavior: auto;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="tile nav">
+        <div class="logo"><img src="assets/icon.png" alt="" />ReWiseQuest</div>
+        <nav>
+          <a href="#try" data-demo>Demo</a><a href="#features">Features</a
+          ><a href="#creator">Creator</a>
+          <!-- PASTE YOUR MICROSOFT STORE LINK in every href="STORE_LINK_HERE" below -->
+          <a class="cta" href="STORE_LINK_HERE">Get the app</a>
+        </nav>
+      </header>
+
+      <!-- ============ TRAILER ============ -->
+      <section class="tile trail" id="trailer" aria-label="ReWiseQuest trailer">
+        <div class="trail-head"></div>
+        <div
+          class="tw"
+          id="trWrap"
+          role="img"
+          aria-label="Animated trailer showing how ReWiseQuest picks one topic a day"
+        >
+          <div class="tv" id="trCv">
+            <div class="tbug" id="trBug">
+              <img src="assets/icon.png" alt="" />ReWiseQuest
+            </div>
+
+            <div
+              class="tsc"
+              id="trS0"
+              style="background: #14110e; color: #f7f0e1"
+            >
+              <div id="trChips"></div>
+              <div
+                class="tcp"
+                id="trC0"
+                style="
+                  position: absolute;
+                  bottom: 34px;
+                  left: 0;
+                  right: 0;
+                  color: #f7f0e1;
+                  font-size: 30px;
+                "
+              >
+                So much to revise...
+              </div>
+            </div>
+
+            <div class="tsc" id="trS1">
+              <div
+                class="tt"
+                id="trTile1"
+                style="background: #d6f36a; width: 360px"
+              >
+                <span class="tl" style="background: #ff6a4d">New slot</span>
+                <div
+                  style="
+                    font-size: 34px;
+                    font-weight: 700;
+                    margin: 12px 0 8px;
+                    letter-spacing: -0.03em;
+                  "
+                >
+                  Binary Search
+                </div>
+                <div style="font-size: 13px; font-weight: 500">
+                  Revisions 1/4 &rarr; Medium
+                </div>
+              </div>
+              <div class="tcp" style="font-size: 32px">One topic a day.</div>
+            </div>
+
+            <div class="tsc" id="trS2">
+              <div
+                class="tt"
+                style="
+                  background: #ffb4cf;
+                  width: 380px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 12px;
+                "
+              >
+                <span class="tl" style="align-self: flex-start">Add topic</span>
+                <div style="display: flex; gap: 8px">
+                  <div
+                    id="trTyped"
+                    style="
+                      flex: 1;
+                      background: #fff;
+                      border: 2px solid #14110e;
+                      border-radius: 5px;
+                      padding: 8px 10px;
+                      font-size: 15px;
+                      font-weight: 500;
+                      min-height: 38px;
+                    "
+                  ></div>
+                  <div
+                    id="trAdd"
+                    style="
+                      background: #ffbf2f;
+                      border: 2px solid #14110e;
+                      border-radius: 5px;
+                      padding: 8px 14px;
+                      font-size: 14px;
+                      font-weight: 700;
+                      box-shadow: 3px 3px 0 #14110e;
+                    "
+                  >
+                    Add
+                  </div>
+                </div>
+                <div class="ts3">
+                  <span id="trDH">Hard</span
+                  ><span id="trDM" class="sel">Medium</span
+                  ><span id="trDE">Easy</span>
+                </div>
+                <div
+                  id="trToast"
+                  style="font-size: 13px; font-weight: 700; opacity: 0"
+                >
+                  Added to New &middot; 5 revisions per stack
+                </div>
+              </div>
+              <div class="tcp">Add it. Forget the planning.</div>
+            </div>
+
+            <div class="tsc" id="trS3">
+              <div class="tsp" id="trStp"></div>
+              <div style="font-size: 14px; font-weight: 700" id="trSlot">
+                Slot 1 of 7
+              </div>
+              <div class="tcp">A smart 7-slot cycle picks for you.</div>
+            </div>
+
+            <div class="tsc" id="trS4">
+              <div
+                class="tt"
+                style="
+                  background: #d6f36a;
+                  width: 380px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 12px;
+                  align-items: center;
+                "
+              >
+                <div
+                  style="
+                    font-size: 26px;
+                    font-weight: 700;
+                    letter-spacing: -0.03em;
+                  "
+                >
+                  Binary Search
+                </div>
+                <div class="tb" id="trRun">Start revision</div>
+              </div>
+              <div class="tcp" id="trC4">Study. Finish. Done.</div>
+            </div>
+
+            <div class="tsc" id="trS5">
+              <div
+                style="
+                  display: flex;
+                  gap: 10px;
+                  align-items: center;
+                  position: relative;
+                "
+              >
+                <span
+                  class="tl"
+                  style="
+                    background: #ffbf2f;
+                    font-size: 13px;
+                    padding: 5px 12px;
+                  "
+                  id="trStk"
+                  >Streak 6</span
+                >
+                <span class="tl" style="font-size: 13px; padding: 5px 12px"
+                  >Level 3</span
+                >
+                <div
+                  id="trPop"
+                  style="
+                    position: absolute;
+                    left: 100%;
+                    margin-left: 14px;
+                    top: -4px;
+                    font-size: 22px;
+                    font-weight: 700;
+                    opacity: 0;
+                    white-space: nowrap;
+                  "
+                >
+                  +30 XP
+                </div>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                  width: 360px;
+                "
+              >
+                <div
+                  style="
+                    flex: 1;
+                    height: 22px;
+                    border: 2px solid #14110e;
+                    border-radius: 5px;
+                    overflow: hidden;
+                    background: #fff;
+                  "
+                >
+                  <div
+                    id="trXpb"
+                    style="height: 100%; width: 40%; background: #2ec785"
+                  ></div>
+                </div>
+                <span
+                  style="font-size: 14px; font-weight: 700; min-width: 56px"
+                  id="trXpt"
+                  >40/100</span
+                >
+              </div>
+              <div class="tcp">Earn XP. Build your streak.</div>
+            </div>
+
+            <div class="tsc" id="trS6">
+              <div class="thm" id="trHm"></div>
+              <span
+                class="tl"
+                style="font-size: 13px; padding: 5px 12px; background: #d6f36a"
+                >Undo available &middot; 4:59</span
+              >
+              <div class="tcp">Skip a day? No penalty.</div>
+            </div>
+
+            <div
+              class="tsc"
+              id="trS7"
+              style="background: #14110e; color: #f7f0e1; gap: 10px"
+            >
+              <div
+                id="trLogo"
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  gap: 8px;
+                "
+              >
+                <img
+                  src="assets/icon.png"
+                  alt=""
+                  style="height: 132px; width: auto; display: block"
+                />
+                <div
+                  style="
+                    font-size: 46px;
+                    font-weight: 700;
+                    letter-spacing: -0.03em;
+                  "
+                >
+                  ReWiseQuest
+                </div>
+              </div>
+              <div class="tcp" id="trTag" style="color: #d6f36a">
+                Revise less. Remember more.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tctl">
+          <button class="cta sm" id="trPP" type="button">Pause</button>
+          <input
+            type="range"
+            id="trSk"
+            min="0"
+            max="300"
+            value="0"
+            step="1"
+            aria-label="Trailer position"
+          />
+          <span id="trTm">0:00 / 0:30</span>
+        </div>
+      </section>
+
+      <section class="hero">
+        <div class="tile hl">
+          <span class="label">Revision tracker for Windows</span>
+          <h1>Your revision, finally under control.</h1>
+          <p>
+            One topic a day. Zero decisions. ReWiseQuest brings your newest
+            material back until it sticks and keeps older topics in rotation so
+            nothing fades.
+          </p>
+          <div class="btns">
+            <a class="cta big" href="STORE_LINK_HERE"
+              >Get it on Microsoft Store &#8599;</a
+            >
+            <button class="cta white" type="button" data-demo>
+              Try the demo
+            </button>
+          </div>
+          <div class="pills">
+            <span class="pill">Free</span><span class="pill">Offline</span
+            ><span class="pill">No account</span
+            ><span class="pill">No tracking</span>
+          </div>
+        </div>
+        <div class="tile hr">
+          <span class="label">Today</span>
+          <div class="steps" aria-label="Seven slot cycle">
+            <div class="step N">N</div>
+            <div class="step M">M</div>
+            <div class="step N">N</div>
+            <div class="step O">O</div>
+            <div class="step N">N</div>
+            <div class="step M">M</div>
+            <div class="step O">O</div>
+          </div>
+          <div class="mini">
+            <div><span>Sliding Window</span><span>Hard &middot; 3/5</span></div>
+            <div>
+              <span>Binary Search</span><span>Medium &middot; 1/4</span>
+            </div>
+            <div><span>Two Pointers</span><span>Easy &middot; 2/3</span></div>
+          </div>
+          <p style="font-weight: 700">Streak: 12 days &middot; Level 4</p>
+        </div>
+      </section>
+
+      <section class="sec" id="try">
+        <div class="tile dcta">
+          <div class="dl">
+            <span class="label">Live demo</span>
+            <h2>Try it right now.</h2>
+            <p>
+              This is the real app engine, running in your browser. Press
+              COMPLETED, add your own topics and pick a difficulty to watch
+              topics move from New to Medium to Old.
+            </p>
+            <button class="cta big white" type="button" data-demo>
+              Open the live demo &#8599;
+            </button>
+            <p class="note">
+              The demo resets when you refresh. The full app adds subjects,
+              timers, notes, streaks, history and reminders.
+            </p>
+          </div>
+          <div class="dr">
+            <img src="assets/icon.png" alt="ReWiseQuest icon" />
+          </div>
+        </div>
+      </section>
+
+      <section class="sec" id="features">
+        <span class="label" style="background: var(--lime)">Features</span>
+        <h2>Everything you need. Nothing you don't.</h2>
+        <div class="grid">
+          <article class="tile fe">
+            <span class="label" style="background: var(--new)">Daily pick</span>
+            <h3>One topic. Zero decisions.</h3>
+            <p>
+              Open the app and your topic is waiting. All your energy goes into
+              learning, not organising.
+            </p>
+          </article>
+          <article class="tile fe">
+            <span class="label" style="background: var(--med)"
+              >Smart rotation</span
+            >
+            <h3>Nothing gets forgotten.</h3>
+            <p>
+              Fresh material keeps coming back until it sticks, while older
+              topics keep returning so they never fade.
+            </p>
+          </article>
+          <article class="tile fe">
+            <span class="label" style="background: var(--old)">Difficulty</span>
+            <h3>Hard, Medium or Easy.</h3>
+            <p>
+              Tell the app how tough a topic feels and it adapts how long that
+              topic stays in focus.
+            </p>
+          </article>
+          <article class="tile fe">
+            <span class="label" style="background: var(--lime)">Subjects</span>
+            <h3>As many as you like.</h3>
+            <p>
+              Keep maths, languages, code and certifications completely
+              separate, each with its own rhythm.
+            </p>
+          </article>
+          <article class="tile fe">
+            <span class="label" style="background: var(--pink)">Timer</span>
+            <h3>See your hours add up.</h3>
+            <p>Time every session and watch your total study time grow.</p>
+          </article>
+          <article class="tile fe">
+            <span class="label" style="background: var(--med)">Notes</span>
+            <h3>Leave yourself a trail.</h3>
+            <p>
+              Pin a permanent note to a topic, and write "where I stopped" so
+              tomorrow starts fast.
+            </p>
+          </article>
+          <article class="tile fe">
+            <span class="label" style="background: var(--new)">Progress</span>
+            <h3>XP, levels and streaks.</h3>
+            <p>
+              Earn XP, level up, protect your streak and fill your history
+              calendar with colour.
+            </p>
+          </article>
+
+          <article class="tile fe">
+            <span class="label" style="background: var(--lime)"
+              >Make it yours</span
+            >
+            <h3>Reminders and six themes.</h3>
+            <p>
+              Get a gentle daily nudge at your time, then pick the colours that
+              make you want to open it.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="sec">
+        <span class="label" style="background: var(--pink)">How it feels</span>
+        <h2>Three queues. One steady habit.</h2>
+        <div class="qs">
+          <div class="tile" style="background: var(--new)">
+            <span class="label">New</span><b>3</b>
+            <p>slots every cycle. Fresh topics get the most attention.</p>
+          </div>
+          <div class="tile" style="background: var(--med)">
+            <span class="label">Medium</span><b>2</b>
+            <p>slots every cycle. Topics that have started to stick.</p>
+          </div>
+          <div class="tile" style="background: var(--old)">
+            <span class="label">Old</span><b>2</b>
+            <p>slots every cycle. Known topics, kept alive for good.</p>
+          </div>
+        </div>
+        <p class="lead">
+          Miss a few days? You pick up exactly where you left off. No guilt, no
+          backlog, no angry red numbers.
+        </p>
+      </section>
+
+      <section class="tile band">
+        <span class="label" style="background: var(--lime)">Privacy</span>
+        <h2>Your data is yours. Completely.</h2>
+        <p>
+          No account. No ads. No analytics. No tracking. ReWiseQuest works fully
+          offline and everything you create stays on your own PC, in a folder
+          you choose.
+        </p>
+        <div class="pills">
+          <span class="pill">Offline</span><span class="pill">No sign-up</span
+          ><span class="pill">Local file</span
+          ><span class="pill">OneDrive friendly</span>
+        </div>
+      </section>
+
+      <section class="tile cr" id="creator">
+        <div class="ph">
+          <img src="assets/author.jpg" alt="Aditya Singh" />
+        </div>
+        <div>
+          <span class="label">Creator</span>
+          <h2>Aditya Singh</h2>
+          <p>
+            I built ReWiseQuest because I wanted a revision system that decides
+            for me and still keeps every old topic alive. It is free, private
+            and made to be used every day.
+          </p>
+          <div class="links">
+            <a class="cta white" href="https://aditya-singh.info/">Email me</a>
+            <a
+              class="cta lime"
+              href="https://github.com/AdityaSingh21Official"
+              target="_blank"
+              rel="noopener"
+              >GitHub &#8599;</a
+            >
+            <a
+              class="cta white"
+              href="https://www.linkedin.com/in/aditya-singh-computer-science-virtuoso/"
+              >LinkedIn &#8599;</a
+            >
+            <a
+              class="cta lime"
+              href="https://aditya-singh.info/"
+              target="_blank"
+              rel="noopener"
+              >ProtFolio &#8599;</a
+            >
+          </div>
+        </div>
+      </section>
+
+      <section class="tile fin">
+        <img src="assets/icon.png" alt="" />
+        <h2>Stop wondering what to study next.</h2>
+        <p>Download ReWiseQuest and let every day count.</p>
+        <a class="cta big white" href="STORE_LINK_HERE"
+          >Get it on Microsoft Store &#8599;</a
+        >
+      </section>
+
+      <footer>
+        <span>&copy; 2026 Aditya Singh. All rights reserved.</span
+        ><span
+          ><a href="https://aditya-singh.info/">More About The Creator</a></span
+        >
+      </footer>
+    </div>
+
+    <!-- ============ DEMO MODAL ============ -->
+    <div class="overlay" id="demoModal" hidden>
+      <section
+        class="tile mbox"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="demoTitle"
+      >
+        <div class="mh">
+          <div class="ttl">
+            <span class="label" style="background: var(--old)">Live demo</span>
+            <h2 id="demoTitle">Try ReWiseQuest</h2>
+          </div>
+          <button
+            class="x"
+            id="demoClose"
+            type="button"
+            aria-label="Close demo"
+          >
+            &times;
+          </button>
+        </div>
+        <div
+          class="stage"
+          role="region"
+          aria-label="Interactive ReWiseQuest demo"
+        >
+          <main class="bento">
+            <header class="tile a-head">
+              <div class="brand">
+                <img src="assets/icon.png" alt="" />REWISEQUEST
+              </div>
+              <div class="xp">
+                <span id="lv">LV 1</span>
+                <div class="meter"><b id="xpbar" style="width: 0"></b></div>
+                <small id="xpt">0/100</small>
+              </div>
+              <span class="badge hide-m" id="mode">NORMAL MODE</span>
+              <span class="badge" id="slot">SLOT 1 / 7</span>
+              <div class="acct">
+                <span class="avatar">S</span>
+                <div><b>Student</b></div>
+              </div>
+            </header>
+            <section class="tile a-cyc">
+              <span class="label">3 : 2 : 2</span>
+              <div class="steps" id="steps"></div>
+              <p class="next" id="next"></p>
+            </section>
+            <section class="tile a-today">
+              <div class="top">
+                <span class="label" id="qtag">-</span
+                ><span class="label diff" id="diff"></span
+                ><span id="note"></span>
+              </div>
+              <div class="pop" id="pop"></div>
+              <h1 class="topic" id="topic"></h1>
+              <p id="hint"></p>
+              <div class="mastery" id="mastery"></div>
+              <button class="complete" id="done" type="button">
+                COMPLETED &#10003;
+              </button>
+            </section>
+            <section class="tile a-add">
+              <span class="label">Add topic &middot; New only</span>
+              <div class="field">
+                <input
+                  id="in"
+                  type="text"
+                  placeholder="e.g. Sliding Window"
+                  aria-label="Topic name"
+                /><button id="add" type="button">ADD</button>
+              </div>
+              <div class="seg" role="radiogroup" aria-label="Difficulty">
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked="false"
+                  data-d="H"
+                >
+                  HARD<small>5 revisions</small>
+                </button>
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked="true"
+                  data-d="M"
+                >
+                  MEDIUM<small>4 revisions</small>
+                </button>
+                <button
+                  type="button"
+                  role="radio"
+                  aria-checked="false"
+                  data-d="E"
+                >
+                  EASY<small>3 revisions</small>
+                </button>
+              </div>
+              <p class="cap">
+                Revisions needed in each stack before it moves down.
+              </p>
+            </section>
+            <section class="tile a-stats">
+              <span class="label">Progress</span>
+              <div class="row"><span>Topics</span><b id="st1">0</b></div>
+              <div class="row"><span>Revised</span><b id="st2">0</b></div>
+              <div class="row"><span>In Old</span><b id="st3">0</b></div>
+            </section>
+            <section class="tile a-new">
+              <span class="label" id="ta"></span>
+              <div class="chips" id="qa"></div>
+            </section>
+            <section class="tile a-med">
+              <span class="label" id="tb"></span>
+              <div class="chips" id="qb"></div>
+            </section>
+            <section class="tile a-old">
+              <span class="label" id="tc"></span>
+              <div class="chips" id="qc"></div>
+            </section>
+          </main>
+        </div>
+      </section>
+    </div>
+
+    <!-- ============ DEMO ENGINE + MODAL ============ -->
+    <script>
+      var CYC = ["N", "M", "N", "O", "N", "M", "O"],
+        FB = { N: ["M", "O"], M: ["N", "O"], O: ["M", "N"] },
+        SOLO_MAP = { N: "H", M: "M", O: "E" },
+        SOLO_FB = { H: ["M", "E"], M: ["H", "E"], E: ["M", "H"] };
+      var STACK_NAME = { N: "New", M: "Medium", O: "Old" },
+        GRP_NAME = { H: "Hard", M: "Medium", E: "Easy" },
+        NEED = { H: 5, M: 4, E: 3 },
+        XPG = { H: 30, M: 20, E: 10 };
+      var COL = {
+        N: "var(--new)",
+        H: "var(--new)",
+        M: "var(--med)",
+        O: "var(--old)",
+        E: "var(--old)",
+      };
+      function T(n, s, d, c) {
+        return { n: n, s: s, d: d, c: c || 0 };
+      }
+      var S = {
+        idx: 0,
+        xp: 0,
+        done: 0,
+        msg: "",
+        mode: "",
+        diff: "M",
+        topics: [
+          T("Krebs cycle", "N", "E", 1),
+          T("Mitosis", "N", "H", 0),
+          T("Osmosis", "N", "M", 2),
+          T("Cell wall", "M", "M", 1),
+          T("Enzymes", "M", "E", 2),
+          T("Photosynthesis", "O", "M", 3),
+          T("DNA basics", "O", "E", 2),
+          T("Cell types", "O", "H", 1),
+        ],
+      };
+      function $(i) {
+        return document.getElementById(i);
+      }
+      function el(t, c, x) {
+        var e = document.createElement(t);
+        if (c) e.className = c;
+        if (x !== undefined) e.textContent = x;
+        return e;
+      }
+      function blocks(c, n, b) {
+        for (var j = 0; j < n; j++) b.appendChild(el("i", j < c ? "on" : ""));
+      }
+      function stackList(s) {
+        return S.topics.filter(function (t) {
+          return t.s === s;
+        });
+      }
+      function groupList(g) {
+        return S.topics.filter(function (t) {
+          return t.d === g;
+        });
+      }
+      function mode() {
+        return ["N", "M", "O"].filter(function (s) {
+          return stackList(s).length;
+        }).length === 1
+          ? "solo"
+          : "normal";
+      }
+      function sync() {
+        var m = mode();
+        if (m !== S.mode) {
+          if (S.mode) S.idx = 0;
+          S.mode = m;
+        }
+      }
+      function pick() {
+        var type = CYC[S.idx],
+          solo = mode() === "solo",
+          key = solo ? SOLO_MAP[type] : type,
+          order = [key].concat(solo ? SOLO_FB[key] : FB[key]);
+        for (var i = 0; i < order.length; i++) {
+          var k = order[i],
+            list = solo ? groupList(k) : stackList(k);
+          if (list.length) return { t: list[0], from: k, want: key };
+        }
+        return null;
+      }
+      function render() {
+        var p = pick(),
+          solo = mode() === "solo",
+          names = solo ? GRP_NAME : STACK_NAME,
+          st = $("steps");
+        st.textContent = "";
+        CYC.forEach(function (c, i) {
+          st.appendChild(
+            el(
+              "div",
+              "step " +
+                c +
+                (i < S.idx ? " done" : "") +
+                (i === S.idx ? " now" : ""),
+              c,
+            ),
+          );
+        });
+        var nx = $("next");
+        nx.textContent = "";
+        nx.appendChild(
+          document.createTextNode("Slot " + (S.idx + 1) + " of 7: "),
+        );
+        nx.appendChild(
+          el("b", "", names[solo ? SOLO_MAP[CYC[S.idx]] : CYC[S.idx]]),
+        );
+        var tag = $("qtag"),
+          m = $("mastery"),
+          diff = $("diff");
+        m.textContent = "";
+        if (p) {
+          var t = p.t,
+            need = NEED[t.d];
+          tag.textContent = names[p.from] + " slot";
+          tag.style.background = COL[p.from];
+          diff.textContent =
+            GRP_NAME[t.d] + " \u00B7 " + need + "\u00D7 per stack";
+          diff.style.display = "";
+          $("note").textContent =
+            p.from !== p.want
+              ? "(passed along from " + names[p.want] + ")"
+              : "";
+          $("topic").textContent = t.n;
+          if (t.s === "O")
+            m.appendChild(
+              el(
+                "span",
+                "",
+                "Old stack: stays in rotation \u00B7 revised " +
+                  t.c +
+                  "\u00D7 here",
+              ),
+            );
+          else {
+            m.appendChild(el("span", "", "Revisions"));
+            blocks(t.c, need, m);
+            m.appendChild(
+              el(
+                "span",
+                "",
+                t.c +
+                  "/" +
+                  need +
+                  " \u2192 " +
+                  STACK_NAME[t.s === "N" ? "M" : "O"],
+              ),
+            );
+          }
+          $("hint").textContent =
+            S.msg ||
+            "Revise it, then mark it completed. It goes to the back of its queue.";
+        } else {
+          tag.textContent = "Empty";
+          tag.style.background = "#fff";
+          diff.style.display = "none";
+          $("note").textContent = "";
+          $("topic").textContent = "Add your first topic";
+          $("hint").textContent = "New topics always join the New queue.";
+        }
+        $("done").disabled = !p;
+        var keys = solo ? ["H", "M", "E"] : ["N", "M", "O"],
+          slots = [3, 2, 2],
+          ids = ["a", "b", "c"];
+        keys.forEach(function (k, i) {
+          var list = solo ? groupList(k) : stackList(k),
+            lab = $("t" + ids[i]);
+          lab.textContent =
+            (solo ? GRP_NAME : STACK_NAME)[k] +
+            " \u00B7 " +
+            slots[i] +
+            " slots";
+          lab.style.background = COL[k];
+          var box = $("q" + ids[i]);
+          box.textContent = "";
+          if (!list.length) box.appendChild(el("div", "chip empty", "Empty"));
+          list
+            .slice(0, list.length > 3 ? 2 : list.length)
+            .forEach(function (x) {
+              var d = el("div", "chip" + (p && x === p.t ? " front" : ""));
+              d.appendChild(el("span", "", x.n));
+              if (x.s === "O") d.appendChild(el("span", "", "\u221E"));
+              else {
+                var pp = el("span", "pips");
+                blocks(x.c, NEED[x.d], pp);
+                d.appendChild(pp);
+              }
+              box.appendChild(d);
+            });
+          if (list.length > 3)
+            box.appendChild(
+              el("div", "chip more", "+" + (list.length - 2) + " more"),
+            );
+        });
+        $("lv").textContent = "LV " + (1 + Math.floor(S.xp / 100));
+        $("xpt").textContent = (S.xp % 100) + "/100";
+        $("xpbar").style.width = (S.xp % 100) + "%";
+        $("slot").textContent = "SLOT " + (S.idx + 1) + " / 7";
+        $("mode").textContent = solo ? "SOLO MODE" : "NORMAL MODE";
+        $("st1").textContent = S.topics.length;
+        $("st2").textContent = S.done;
+        $("st3").textContent = stackList("O").length;
+      }
+      function complete() {
+        var p = pick();
+        if (!p) return;
+        var t = p.t,
+          msg = "";
+        t.c++;
+        if (t.s !== "O" && t.c >= NEED[t.d]) {
+          var to = t.s === "N" ? "M" : "O";
+          msg = t.n + " moved to " + STACK_NAME[to] + "!";
+          t.s = to;
+          t.c = 0;
+        }
+        S.topics.splice(S.topics.indexOf(t), 1);
+        S.topics.push(t);
+        S.done++;
+        S.xp += XPG[t.d];
+        S.idx = (S.idx + 1) % 7;
+        var before = S.mode;
+        sync();
+        if (S.mode !== before)
+          msg +=
+            (msg ? " " : "") +
+            (S.mode === "solo" ? "Solo mode on." : "Back to normal mode.") +
+            " Pattern restarted.";
+        S.msg = msg;
+        var pop = $("pop");
+        pop.textContent = "+" + XPG[t.d] + " XP";
+        pop.classList.remove("go");
+        void pop.offsetWidth;
+        pop.classList.add("go");
+        render();
+      }
+      $("done").addEventListener("click", complete);
+      function addTopic() {
+        var v = $("in").value.trim();
+        if (!v) return;
+        S.topics.push(T(v, "N", S.diff, 0));
+        $("in").value = "";
+        var before = S.mode;
+        sync();
+        S.msg =
+          v +
+          " added to New (" +
+          GRP_NAME[S.diff] +
+          ": " +
+          NEED[S.diff] +
+          " revisions per stack)." +
+          (S.mode !== before ? " Back to normal mode. Pattern restarted." : "");
+        render();
+      }
+      $("add").addEventListener("click", addTopic);
+      $("in").addEventListener("keydown", function (e) {
+        if (e.key === "Enter") addTopic();
+      });
+      document.querySelectorAll(".seg button").forEach(function (b) {
+        b.addEventListener("click", function () {
+          S.diff = b.dataset.d;
+          document.querySelectorAll(".seg button").forEach(function (x) {
+            x.setAttribute("aria-checked", x === b ? "true" : "false");
+          });
+        });
+      });
+      sync();
+      render();
+
+      /* ---- demo modal ---- */
+      (function () {
+        var ov = $("demoModal"),
+          opener = null;
+        function openDemo(e) {
+          if (e) e.preventDefault();
+          opener = document.activeElement;
+          ov.hidden = false;
+          document.body.classList.add("modal-open");
+          $("demoClose").focus();
+        }
+        function closeDemo() {
+          ov.hidden = true;
+          document.body.classList.remove("modal-open");
+          if (opener && opener.focus) opener.focus();
+        }
+        document.querySelectorAll("[data-demo]").forEach(function (b) {
+          b.addEventListener("click", openDemo);
+        });
+        $("demoClose").addEventListener("click", closeDemo);
+        ov.addEventListener("mousedown", function (e) {
+          if (e.target === ov) closeDemo();
+        });
+        document.addEventListener("keydown", function (e) {
+          if (ov.hidden) return;
+          if (e.key === "Escape") {
+            closeDemo();
+            return;
+          }
+          if (e.key === "Tab") {
+            var f = ov.querySelectorAll(
+              "button:not(:disabled), input, a[href]",
+            );
+            if (!f.length) return;
+            var first = f[0],
+              last = f[f.length - 1];
+            if (e.shiftKey && document.activeElement === first) {
+              e.preventDefault();
+              last.focus();
+            } else if (!e.shiftKey && document.activeElement === last) {
+              e.preventDefault();
+              first.focus();
+            }
+          }
+        });
+      })();
+    </script>
+
+    <!-- ============ TRAILER ENGINE ============ -->
+    <script>
+      (function () {
+        var g = function (i) {
+          return document.getElementById(i);
+        };
+        var starts = [0, 3, 6, 10, 14, 18, 22, 25, 30],
+          D = 30,
+          HOLD = 2.5,
+          t = 0,
+          playing = true,
+          last = null,
+          visible = true;
+        var reduce =
+          window.matchMedia &&
+          window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (reduce) {
+          playing = false;
+          t = D;
+        }
+        var scs = [].slice.call(document.querySelectorAll("#trCv .tsc"));
+        var cols = ["#ff6a4d", "#ffbf2f", "#2ec785", "#ffb4cf", "#d6f36a"];
+        var names = [
+          "Sliding Window",
+          "Graphs",
+          "Recursion",
+          "Photosynthesis",
+          "Calculus",
+          "Trees",
+          "DP",
+          "Organic chem",
+          "Thermodynamics",
+          "Hashing",
+          "Genetics",
+          "Sorting",
+          "Algebra",
+          "World War II",
+          "Binary Search",
+          "Matrices",
+          "Cell biology",
+          "Heaps",
+        ];
+        var chips = names.map(function (n, k) {
+          var e = document.createElement("div");
+          e.className = "tch";
+          e.textContent = n;
+          e.style.left = 6 + ((k * 37) % 72) + "%";
+          e.style.top = 6 + ((k * 23) % 62) + "%";
+          e.style.background = cols[k % 5];
+          e.style.opacity = 0;
+          g("trChips").appendChild(e);
+          return { el: e, d: k * 0.12, r: ((k * 13) % 24) - 12 };
+        });
+        var stp = [];
+        "NMNONMO".split("").forEach(function (c) {
+          var e = document.createElement("i");
+          e.textContent = c;
+          e.style.background =
+            c === "N" ? "#ff6a4d" : c === "M" ? "#ffbf2f" : "#2ec785";
+          g("trStp").appendChild(e);
+          stp.push(e);
+        });
+        var hm = [],
+          lv = [];
+        for (var i = 0; i < 126; i++) {
+          var b = document.createElement("b");
+          g("trHm").appendChild(b);
+          hm.push(b);
+          var r = (i * 7 + 3) % 11;
+          lv.push(r < 3 ? 0 : r < 6 ? 1 : r < 9 ? 2 : 3);
+        }
+        var hc = ["rgba(20,17,14,.12)", "#b7f0d3", "#2ec785", "#0f8f61"];
+        function f2(n) {
+          return n < 10 ? "0" + n : "" + n;
+        }
+        var sc = [
+          function (l) {
+            chips.forEach(function (c, k) {
+              c.el.style.opacity = l > c.d ? 1 : 0;
+              c.el.style.transform =
+                "translate(" +
+                Math.round(Math.sin(t * 3 + k) * 5) +
+                "px," +
+                Math.round(Math.cos(t * 2 + k) * 5) +
+                "px) rotate(" +
+                c.r +
+                "deg)";
+            });
+            g("trC0").style.opacity = l > 1.2 ? 1 : 0;
+          },
+          function (l) {
+            var p = Math.min(1, l * 3);
+            g("trTile1").style.opacity = p;
+            g("trTile1").style.transform =
+              "translateY(" + Math.round((1 - p) * 30) + "px)";
+          },
+          function (l) {
+            var s = "Sliding Window";
+            g("trTyped").textContent =
+              s.slice(0, Math.min(s.length, Math.floor(l * 8))) +
+              (l < 2 ? "|" : "");
+            var h = l > 2.2;
+            g("trDH").className = h ? "sel" : "";
+            g("trDM").className = h ? "" : "sel";
+            var pr = l > 3 && l < 3.25;
+            g("trAdd").style.transform = pr ? "translate(3px,3px)" : "none";
+            g("trAdd").style.boxShadow = pr ? "none" : "3px 3px 0 #14110e";
+            g("trToast").style.opacity = l > 3.3 ? 1 : 0;
+          },
+          function (l) {
+            var k = Math.min(6, Math.floor(l / 0.55));
+            stp.forEach(function (e, j) {
+              e.className = j === k ? "now" : "";
+              e.style.opacity = j < k ? 0.35 : 1;
+            });
+            g("trSlot").textContent = "Slot " + (k + 1) + " of 7";
+          },
+          function (l) {
+            var bt = g("trRun");
+            if (l < 1) {
+              bt.textContent = "Start revision";
+              bt.style.background = "#fff";
+            } else if (l < 3.2) {
+              var s = Math.floor(((l - 1) / 2.2) * 1452);
+              bt.textContent =
+                f2(Math.floor(s / 60)) + ":" + f2(s % 60) + " elapsed";
+              bt.style.background = "#ff6a4d";
+            } else {
+              bt.textContent = "Revision saved";
+              bt.style.background = "#fff";
+            }
+            g("trC4").textContent =
+              l < 1
+                ? "Study."
+                : l < 3.2
+                  ? "Study. Finish."
+                  : "Study. Finish. Done.";
+          },
+          function (l) {
+            var p = Math.min(1, Math.max(0, (l - 0.8) / 1.5)),
+              v = 40 + 30 * p;
+            g("trXpb").style.width = v + "%";
+            g("trXpt").textContent = Math.round(v) + "/100";
+            g("trPop").style.opacity = l > 0.8 && l < 2.4 ? 1 : 0;
+            g("trPop").style.transform =
+              "translateY(" +
+              Math.round(-Math.min(1, (l - 0.8) / 1.4) * 14) +
+              "px)";
+            g("trStk").textContent = "Streak " + (l > 2.2 ? 7 : 6);
+          },
+          function (l) {
+            var n = Math.floor(Math.min(1, l / 2.2) * 126);
+            hm.forEach(function (b, i) {
+              b.style.background = i < n ? hc[lv[i]] : hc[0];
+            });
+          },
+          function (l) {
+            var p = Math.min(1, l * 2.5);
+            g("trLogo").style.transform = "scale(" + (0.9 + 0.1 * p) + ")";
+            g("trLogo").style.opacity = p;
+            g("trTag").style.opacity = l > 1.2 ? 1 : 0;
+          },
+        ];
+        function fit() {
+          var w = g("trWrap").clientWidth;
+          g("trCv").style.transform = "scale(" + w / 680 + ")";
+        }
+        fit();
+        window.addEventListener("resize", fit);
+        if (window.ResizeObserver) new ResizeObserver(fit).observe(g("trWrap"));
+        function upd() {
+          var tc = Math.min(t, D),
+            i = 0;
+          for (var k = 0; k < 8; k++) if (tc >= starts[k]) i = k;
+          scs.forEach(function (s, k) {
+            s.classList.toggle("on", k === i);
+          });
+          g("trBug").style.opacity = tc >= 3.3 && tc < 24.7 ? 1 : 0;
+          sc[i](tc - starts[i]);
+          g("trTm").textContent = "0:" + f2(Math.floor(tc)) + " / 0:30";
+          g("trSk").value = Math.round(tc * 10);
+        }
+        function loop(ts) {
+          if (last === null) last = ts;
+          var dt = Math.min(0.1, (ts - last) / 1000);
+          last = ts;
+          if (playing && visible) {
+            t += dt;
+            if (t >= D + HOLD) t = 0;
+          }
+          upd();
+          requestAnimationFrame(loop);
+        }
+        if ("IntersectionObserver" in window) {
+          new IntersectionObserver(
+            function (en) {
+              visible = en[0].isIntersecting;
+            },
+            { threshold: 0.15 },
+          ).observe(g("trWrap"));
+        }
+        g("trPP").textContent = playing ? "Pause" : "Play";
+        g("trPP").addEventListener("click", function () {
+          if (!playing && t >= D) t = 0;
+          playing = !playing;
+          this.textContent = playing ? "Pause" : "Play";
+        });
+        g("trSk").addEventListener("input", function () {
+          t = this.value / 10;
+          upd();
+        });
+        requestAnimationFrame(loop);
+      })();
+    </script>
+  </body>
+</html>
